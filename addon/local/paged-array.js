@@ -13,13 +13,17 @@ export default Ember.ArrayProxy.extend(Ember.Evented, {
       all: this.get('content')
     });
   },
-
-  arrangedContent: Ember.computed("content.[]", "page", "perPage", function() {
-    return this.divideObj().objsForPage(this.get('page'));
+  
+  pagedHelper: Ember.computed("content.[]", "page", "perPage", function() {
+    return this.divideObj();
   }),
 
-  totalPages: Ember.computed("content.[]", "perPage", function() {
-    return this.divideObj().totalPages();
+  arrangedContent: Ember.computed("pagedHelper", "page", function() {
+    return this.get('pagedHelper').objsForPage(this.get('page'));
+  }),
+
+  totalPages: Ember.computed("pagedHelper", function() {
+    return this.get('pagedHelper').totalPages();
   }),
 
   setPage: function(page) {
